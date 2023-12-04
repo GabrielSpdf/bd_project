@@ -26,17 +26,30 @@ def insert_into(db, table, values_array):
         print('Erro: Tabela não encontrada')
         return False
 
-def delete_from(db, table, condition_value):
+def delete_from(db, table, condition_column, condition_value):
     try:
         file_path = f'./dbs/{db}/{table}.csv'
 
-        # Lê o arquivo CSV em um DataFrame
-        dataframe = pd.read_csv(file_path, sep=';')
+        # Lê o arquivo CSV em um DataFrame sem incluir o índice
+        dataframe = pd.read_csv(file_path, sep=';', index_col=False)
 
-        # Filtra o DataFrame para manter apenas as linhas que não contêm o valor específico
-        dataframe = dataframe[~dataframe.isin([condition_value]).any(axis=1)]
+        # Verifica se a coluna de condição existe no DataFrame
+        if condition_column not in dataframe.columns:
+            print(f'Erro: Coluna de condição "{condition_column}" não encontrada na tabela')
+            return False
 
-        # Salva o DataFrame resultante no arquivo CSV
+        # Converte o valor para string se for um inteiro
+        if isinstance(condition_value, int):
+            condition_value = str(condition_value)
+
+        # Filtra o DataFrame para manter apenas as linhas onde o valor na coluna de condição é diferente do valor especificado
+        dataframe = dataframe[dataframe[condition_column] != condition_value]
+
+        # Remove colunas que contenham "Unnamed:"
+        unnamed_columns = [col for col in dataframe.columns if 'Unnamed:' in col]
+        dataframe.drop(unnamed_columns, axis=1, inplace=True)
+
+        # Salva o DataFrame resultante no arquivo CSV sem incluir o índice
         dataframe.to_csv(file_path, index=False, sep=';')
 
         return True
@@ -44,7 +57,6 @@ def delete_from(db, table, condition_value):
     except FileNotFoundError:
         print('Erro: Tabela não encontrada')
         return False
-    
 
 def update_table(db, table, row_index, updates):
     try:
@@ -75,12 +87,12 @@ def update_table(db, table, row_index, updates):
 # Exemplo de uso insert_into
 #insert_into('db_teste', 'teste', ['gabriel', '123', 'gabriel@123'])
 
-# Exemplo de uso delete_from
-#delete_from('db_teste', 'teste', 'gabriel')
-
 # Exemplo de uso update_table
 #updates = {1: 'gabriel', 3: 123}
 #update_table('db_teste', 'teste', 1, updates)
+
+# Exemplo de uso
+#delete_from('db_teste', 'teste', 'Col0', 123)
 
 
 
