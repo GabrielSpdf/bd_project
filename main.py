@@ -33,4 +33,3 @@ while state != 'quit':
             state = 'db_selection'
             continue
         interpret(command, db)
-

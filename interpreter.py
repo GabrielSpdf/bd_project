@@ -1,5 +1,6 @@
-import importer;
+import importer
 import querier
+import pandas as pd
 
 def get_select_lists(command):
     i = 1
@@ -44,13 +45,12 @@ def interpret(command, db):
 
             importer.import_mysql(conn_params, table_array, db)
 
-
     if command[0] == 'select':
         (select, from_tables, where) = get_select_lists(command)
         from_ = []
         for table in from_tables:
-            file = open('../dbs/' + db + '/' + table + '.csv', '+r')
-            from_.append(file.read())
+            dataframe = pd.read_csv("./dbs/" + db + "/" + table + ".csv", sep = ';')
+            from_.append(dataframe)
         querier.query(select, from_, where, db)
 
     

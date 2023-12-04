@@ -1,15 +1,28 @@
 def cartesian_product(from_):
     if len(from_) == 2:
-        table1 = from_[0].split('\n')
-        table2 = from_[1].split('\n')
-        cp = []
-        for line1 in table1:
-            for line2 in table2:
-                cp.append(line1+';'+line2)
-        return cp
+        return from_[0].merge(from_[1], how = 'cross')
     else:
         return cartesian_product(from_[0], from_[1:])
 
+def break_into_conditions(where):
+    result = []
+    buf = []
+    for word in where:
+        if word != 'and':
+            buf.append(word)
+        else:
+            result.append(buf)
+            buf = []
+    result.append(buf)
+    return result
+
 def query(select, from_, where, db):
     from_big_table = cartesian_product(from_)
-    print(from_big_table)
+    if select[0] == '*':
+        select = from_big_table.columns
+    where_conditions = break_into_conditions(where)
+    result = from_big_table
+    for condition in where_conditions:
+        result = result.loc[result[condition[0]] == result[condition[2]]]
+    result = result.filter(items = select)
+    print(result)

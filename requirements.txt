@@ -1,1 +1,2 @@
 mysql_connector==8.2.0
+pandas==2.0.3

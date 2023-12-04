@@ -1,5 +1,4 @@
 import mysql.connector # realizar ligacao com mysql
-import os # manipulacao de arquivos e diretorios
 
 # Le uma lista de arquivos .csv, e importa eles pro banco de dados
 # db: diretório banco de dados
