@@ -1,2 +1,2 @@
-mysql_connector==8.2.0
+mysql_connector==2.1.7
 pandas==2.0.3

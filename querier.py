@@ -20,7 +20,7 @@ def break_into_conditions(where):
     result.append(buf)
     return result
 
-def query(select, from_, where, order_by):
+def query(select, from_, where):
     from_big_table = cartesian_product(from_)
     if select[0] == '*':
         select = from_big_table.columns

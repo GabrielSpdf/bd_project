@@ -16,10 +16,9 @@ def get_select_lists(command):
         from_.append(command[i])
         i += 1
     i += 1
-    while i < len(command) and command[i] != 'orderby':
+    while i < len(command):
         where.append(command[i])
         i += 1
-    if command[i] == 'orderby'
     return (select, from_, where)
 
 
@@ -49,15 +48,11 @@ def interpret(command, db):
 
     if command[0] == 'select':
         (select, from_tables, where) = get_select_lists(command)
-        if command[-1] == 'order':
-            order_by = True
-        else:
-            order_by = False
         from_ = []
         for table in from_tables:
             dataframe = pd.read_csv("./dbs/" + db + "/" + table + ".csv", sep = ';')
             from_.append(dataframe)
-        querier.query(select, from_, where, order_by)
+        querier.query(select, from_, where)
 
     if command[0] == 'insert':
         table = command[1]
